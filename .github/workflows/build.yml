@@ -1,0 +1,30 @@
+name: Build FovPlus QMOD
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup QPM and NDK
+        uses: QuestPackageManager/setup-qpm@v1
+        with:
+          ndk: "27"
+
+      - name: Restore dependencies
+        run: qpm restore
+
+      - name: Build and package QMOD
+        run: qpm s qmod
+
+      - name: Upload FovPlus.qmod
+        uses: actions/upload-artifact@v4
+        with:
+          name: FovPlus-qmod
+          path: "*.qmod"
